@@ -22,6 +22,7 @@ configure_credentials $payload
 
 uri=$(jq -r '.source.uri // ""' < $payload)
 branch=$(jq -r '.source.branch // ""' < $payload)
+pull_request=$(jq -r '.source.pull_request // ""' < $payload)
 paths="$(jq -r '(.source.paths // ["."])[]' < $payload)" # those "'s are important
 ignore_paths="$(jq -r '":!" + (.source.ignore_paths // [])[]' < $payload)" # these ones too
 tag_filter=$(jq -r '.source.tag_filter // ""' < $payload)
@@ -56,6 +57,11 @@ else
 
   git clone --single-branch $uri $branchflag $destination $tagflag
   cd $destination
+fi
+
+if [ -n "$pull_request" ] && [ -z "$branch" ]; then
+  git fetch origin refs/pull/*/head:refs/remotes/origin/pr/*
+  git checkout "origin/pr/$pull_request"
 fi
 
 if [ -n "$ref" ] && git cat-file -e "$ref"; then
