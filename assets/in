@@ -86,7 +86,7 @@ cd $destination
 git fetch origin refs/notes/*:refs/notes/* $tagflag
 
 if [ -n "$pull_request" ] && [ -z "$branch" ]; then
-  git fetch origin refs/pull/*/head:refs/remotes/origin/pr/*
+  git fetch --force origin refs/pull/*/head:refs/remotes/origin/pr/*
 fi
 
 if [ "$depth" -gt 0 ]; then

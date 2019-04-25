@@ -60,7 +60,7 @@ else
 fi
 
 if [ -n "$pull_request" ] && [ -z "$branch" ]; then
-  git fetch origin refs/pull/*/head:refs/remotes/origin/pr/*
+  git fetch --force origin refs/pull/*/head:refs/remotes/origin/pr/*
   git checkout "origin/pr/$pull_request"
 fi
 
