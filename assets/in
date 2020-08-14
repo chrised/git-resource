@@ -91,6 +91,8 @@ fi
 
 if [ "$depth" -gt 0 ]; then
   "$bin_dir"/deepen_shallow_clone_until_ref_is_found_then_check_out "$depth" "$ref" "$tagflag"
+elif [ -n "$pull_request" ] && [ -z "$branch" ]; then
+  git checkout -q "origin/pr/${pull_request}"
 else
   git checkout -q "$ref"
 fi
