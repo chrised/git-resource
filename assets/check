@@ -84,7 +84,13 @@ else
   paths_search=`echo "-- $paths $ignore_paths" | tr "\n\r" " "`
 fi
 
-list_command="git rev-list --all --first-parent $log_range $paths_search"
+# Don't log all if we're trying to list a PR!
+list_extra_args="--all"
+if [ ! -z "$pull_request" ]; then
+  list_extra_args=""
+fi
+
+list_command="git rev-list $list_extra_args --first-parent $log_range $paths_search"
 if [ `echo $filter_whitelist | jq -r '. | length'` -gt 0 ]
 then
     whitelist_items=$(echo $filter_whitelist | jq -r -c '.[]')
