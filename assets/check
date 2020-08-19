@@ -74,6 +74,7 @@ if [ -n "$ref" ] && git cat-file -e "$ref"; then
     log_range="${ref}~1..HEAD"
   fi
 elif [ -n "$pull_request" ]; then
+  reverse=false
   log_range="HEAD"
 else
   log_range=""
