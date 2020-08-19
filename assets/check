@@ -162,6 +162,9 @@ if [ -n "$tag_filter" ]; then
     fi
   } | jq -s "map(.)" >&3
 else
+  if [ -z "${ref}" ]; then
+    list_command+="| git rev-list --stdin -n1"
+  fi
   {
     set -f
     eval "$list_command"
