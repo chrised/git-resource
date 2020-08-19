@@ -23,6 +23,7 @@ configure_credentials $payload
 uri=$(jq -r '.source.uri // ""' < $payload)
 branch=$(jq -r '.source.branch // ""' < $payload)
 pull_request=$(jq -r '.source.pull_request // ""' < $payload)
+pull_request_base=$(jq -r '.source.pull_request_base // "origin/master"' < $payload)
 paths="$(jq -r '(.source.paths // ["."])[]' < $payload)" # those "'s are important
 ignore_paths="$(jq -r '":!" + (.source.ignore_paths // [])[]' < $payload)" # these ones too
 tag_filter=$(jq -r '.source.tag_filter // ""' < $payload)
@@ -64,7 +65,10 @@ if [ -n "$pull_request" ] && [ -z "$branch" ]; then
   git checkout "origin/pr/$pull_request"
 fi
 
-if [ -n "$ref" ] && git cat-file -e "$ref"; then
+if [ -n "$pull_request" ]; then
+  reverse=false
+  log_range="${pull_request_base}..HEAD"
+elif [ -n "$ref" ] && git cat-file -e "$ref"; then
   init_commit=$(git rev-list --max-parents=0 HEAD)
   if [ "${ref}" = "${init_commit}" ]; then
     reverse=true
@@ -73,9 +77,6 @@ if [ -n "$ref" ] && git cat-file -e "$ref"; then
     reverse=true
     log_range="${ref}~1..HEAD"
   fi
-elif [ -n "$pull_request" ]; then
-  reverse=false
-  log_range="HEAD"
 else
   log_range=""
   ref=""
