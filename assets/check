@@ -66,7 +66,7 @@ if [ -n "$pull_request" ] && [ -z "$branch" ]; then
 fi
 
 if [ -n "$pull_request" ]; then
-  reverse=false
+  reverse=true
   log_range="${pull_request_base}..HEAD"
 elif [ -n "$ref" ] && git cat-file -e "$ref"; then
   init_commit=$(git rev-list --max-parents=0 HEAD)
